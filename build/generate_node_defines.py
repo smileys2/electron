@@ -18,17 +18,12 @@ def main(outDir, headers):
   with open(os.path.join(outDir, 'push_and_undef_node_defines.h'), 'w') as o:
     o.write(push_and_undef)
 
-  pop = ''
-  for define in defines:
-    pop += '#pragma pop_macro("%s")\n' % define
+  pop = ''.join('#pragma pop_macro("%s")\n' % define for define in defines)
   with open(os.path.join(outDir, 'pop_node_defines.h'), 'w') as o:
     o.write(pop)
 
 def read_defines(content):
-  defines = []
-  for match in DEFINE_EXTRACT_REGEX.finditer(content):
-    defines.append(match.group(1))
-  return defines
+  return [match.group(1) for match in DEFINE_EXTRACT_REGEX.finditer(content)]
 
 if __name__ == '__main__':
   main(sys.argv[1], sys.argv[2:])

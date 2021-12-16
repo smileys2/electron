@@ -15,7 +15,7 @@ def run_node_configure(target_cpu):
   configure = os.path.join(NODE_DIR, 'configure.py')
   args = ['--dest-cpu', target_cpu]
   # Enabled in Chromium's V8.
-  if target_cpu == 'arm64' or target_cpu == 'x64':
+  if target_cpu in ['arm64', 'x64']:
     args += ['--experimental-enable-pointer-compression']
   # Work around "No acceptable ASM compiler found" error on some Windows
   # machines, it breaks nothing since Electron does not use OpenSSL.
@@ -37,7 +37,7 @@ def read_electron_args():
       if line.startswith('#'):
         continue
       m = re.match('([\w_]+) = (.+)', line)
-      if m == None:
+      if m is None:
         continue
       args[m.group(1)] = m.group(2)
   return args

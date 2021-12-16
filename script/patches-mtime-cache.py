@@ -77,8 +77,8 @@ def set_mtimes(patches_config, mtime):
 
         mtime_cache[file_path] = mtime
 
-    for file_path in mtime_cache:
-        os.utime(file_path, (mtime_cache[file_path], mtime_cache[file_path]))
+    for file_path, value in mtime_cache.items():
+        os.utime(file_path, (mtime_cache[file_path], value))
 
 
 def main():

@@ -25,10 +25,7 @@ def main():
     print('Keyboard interruption. Please try again.')
     return
 
-  totalBrokenLinks = 0
-  for path in filepaths:
-    totalBrokenLinks += getBrokenLinks(path)
-
+  totalBrokenLinks = sum(getBrokenLinks(path) for path in filepaths)
   print('Parsed through ' + str(len(filepaths)) +
         ' files within docs directory and its ' +
         str(totalDirs) + ' subdirectories.')

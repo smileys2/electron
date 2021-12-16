@@ -59,8 +59,7 @@ def skip_path(dep, dist_zip, target_cpu):
 
 def execute(argv):
   try:
-    output = subprocess.check_output(argv, stderr=subprocess.STDOUT)
-    return output
+    return subprocess.check_output(argv, stderr=subprocess.STDOUT)
   except subprocess.CalledProcessError as e:
     print(e.output)
     raise e
@@ -78,8 +77,8 @@ def main(argv):
     execute(['zip', '-r', '-y', dist_zip] + list(dist_files))
   else:
     with zipfile.ZipFile(
-      dist_zip, 'w', zipfile.ZIP_DEFLATED, allowZip64=True
-    ) as z:
+          dist_zip, 'w', zipfile.ZIP_DEFLATED, allowZip64=True
+        ) as z:
       for dep in dist_files:
         if os.path.isdir(dep):
           for root, _, files in os.walk(dep):
@@ -95,11 +94,9 @@ def main(argv):
           )
           name_to_write = arcname
           if should_flatten:
-            if flatten_relative_to:
-              if name_to_write.startswith(flatten_relative_to):
-                name_to_write = name_to_write[len(flatten_relative_to):]
-              else:
-                name_to_write = os.path.basename(arcname)
+            if flatten_relative_to and name_to_write.startswith(
+                flatten_relative_to):
+              name_to_write = name_to_write[len(flatten_relative_to):]
             else:
               name_to_write = os.path.basename(arcname)
           z.write(

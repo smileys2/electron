@@ -91,8 +91,7 @@ class UnexpectedError(Exception):
 
 def run_clang_format_diff_wrapper(args, file_name):
     try:
-        ret = run_clang_format_diff(args, file_name)
-        return ret
+        return run_clang_format_diff(args, file_name)
     except DiffError:
         raise
     except Exception as e:

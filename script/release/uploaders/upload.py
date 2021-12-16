@@ -57,11 +57,8 @@ def main():
     sys.stderr.flush()
     return 1
 
-  tag_exists = False
   release = get_release(args.version)
-  if not release['draft']:
-    tag_exists = True
-
+  tag_exists = not release['draft']
   if not args.upload_to_s3:
     assert release['exists'], \
           'Release does not exist; cannot upload to GitHub!'
@@ -88,10 +85,6 @@ def main():
     dsym_zip = os.path.join(OUT_DIR, DSYM_NAME)
     shutil.copy2(os.path.join(OUT_DIR, 'dsym.zip'), dsym_zip)
     upload_electron(release, dsym_zip, args)
-  elif PLATFORM == 'win32':
-    pdb_zip = os.path.join(OUT_DIR, PDB_NAME)
-    shutil.copy2(os.path.join(OUT_DIR, 'pdb.zip'), pdb_zip)
-    upload_electron(release, pdb_zip, args)
   elif PLATFORM == 'linux':
     debug_zip = os.path.join(OUT_DIR, DEBUG_NAME)
     shutil.copy2(os.path.join(OUT_DIR, 'debug.zip'), debug_zip)
@@ -112,6 +105,10 @@ def main():
       abi_headers_zip = os.path.join(OUT_DIR, 'libcxxabi_headers.zip')
       upload_electron(release, abi_headers_zip, args)
 
+  elif PLATFORM == 'win32':
+    pdb_zip = os.path.join(OUT_DIR, PDB_NAME)
+    shutil.copy2(os.path.join(OUT_DIR, 'pdb.zip'), pdb_zip)
+    upload_electron(release, pdb_zip, args)
   # Upload free version of ffmpeg.
   ffmpeg = get_zip_name('ffmpeg', ELECTRON_VERSION)
   ffmpeg_zip = os.path.join(OUT_DIR, ffmpeg)
@@ -380,8 +377,7 @@ def get_release(version):
   script_path = os.path.join(
     ELECTRON_DIR, 'script', 'release', 'find-github-release.js')
   release_info = execute(['node', script_path, version])
-  release = json.loads(release_info)
-  return release
+  return json.loads(release_info)
 
 if __name__ == '__main__':
   sys.exit(main())

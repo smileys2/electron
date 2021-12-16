@@ -38,13 +38,6 @@ def main():
       make_zip(dsym_zip_file, licenses, dsyms)
       if len(dsyms) > 0 and 'DELETE_DSYMS_AFTER_ZIP' in os.environ:
         execute(['rm', '-rf'] + dsyms)
-  elif PLATFORM == 'win32':
-    pdb_name = 'pdb.zip'
-    with scoped_cwd(args.build_dir):
-      pdbs = glob.glob('*.pdb')
-      pdb_zip_file = os.path.join(args.build_dir, pdb_name)
-      print('Making pdb zip: ' + pdb_zip_file)
-      make_zip(pdb_zip_file, pdbs + licenses, [])
   elif PLATFORM == 'linux':
     debug_name = 'debug.zip'
     with scoped_cwd(args.build_dir):
@@ -52,6 +45,14 @@ def main():
       debug_zip_file = os.path.join(args.build_dir, debug_name)
       print('Making debug zip: ' + debug_zip_file)
       make_zip(debug_zip_file, licenses, dirs)
+
+  elif PLATFORM == 'win32':
+    pdb_name = 'pdb.zip'
+    with scoped_cwd(args.build_dir):
+      pdbs = glob.glob('*.pdb')
+      pdb_zip_file = os.path.join(args.build_dir, pdb_name)
+      print('Making pdb zip: ' + pdb_zip_file)
+      make_zip(pdb_zip_file, pdbs + licenses, [])
 
 def parse_args():
   parser = argparse.ArgumentParser(description='Zip symbols')

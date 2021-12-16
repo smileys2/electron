@@ -44,7 +44,6 @@ def windows_installed_software():
         item = {}
         if objItem.Caption:
             item['caption'] = objItem.Caption
-        if objItem.Caption:
             item['description'] = objItem.Description
         if objItem.InstallDate:
             item['install_date'] = objItem.InstallDate
@@ -88,11 +87,10 @@ def windows_profile():
 
 
 def main(options):
-    if sys.platform == 'win32':
-        with open(options.output_json, 'wb') as f:
-            json.dump(windows_profile(), f)
-    else:
+    if sys.platform != 'win32':
         raise OSError("Unsupported OS")
+    with open(options.output_json, 'wb') as f:
+        json.dump(windows_profile(), f)
 
 
 if __name__ == '__main__':
