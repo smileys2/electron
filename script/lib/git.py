@@ -22,9 +22,7 @@ def is_repo_root(path):
     return False
 
   git_folder_path = os.path.join(path, '.git')
-  git_folder_exists = os.path.exists(git_folder_path)
-
-  return git_folder_exists
+  return os.path.exists(git_folder_path)
 
 
 def get_repo_root(path):
@@ -130,7 +128,7 @@ def guess_base_commit(repo):
       'describe',
       '--tags',
     ]
-    return subprocess.check_output(args).decode('utf-8').rsplit('-', 2)[0:2]
+    return subprocess.check_output(args).decode('utf-8').rsplit('-', 2)[:2]
 
 
 def format_patch(repo, since):
@@ -220,11 +218,8 @@ def remove_patch_filename(patch):
     next_is_patchfilename = i < len(patch) - 1 and patch[i + 1].startswith(
       'Patch-Filename: '
     )
-    if not force_keep_next_line and (
-      is_patchfilename or (next_is_patchfilename and len(l.rstrip()) == 0)
-    ):
-      pass  # drop this line
-    else:
+    if (force_keep_next_line or not is_patchfilename and
+        (not next_is_patchfilename or len(l.rstrip()) != 0)):
       yield l
     force_keep_next_line = l.startswith('Subject: ')
 
@@ -233,7 +228,7 @@ def export_patches(repo, out_dir, patch_range=None, dry_run=False):
   if patch_range is None:
     patch_range, num_patches = guess_base_commit(repo)
     sys.stderr.write("Exporting {} patches in {} since {}\n".format(
-        num_patches, repo, patch_range[0:7]))
+        num_patches, repo, patch_range[:7]))
   patch_data = format_patch(repo, patch_range)
   patches = split_patches(patch_data)
 
@@ -254,7 +249,7 @@ def export_patches(repo, out_dir, patch_range=None, dry_run=False):
       formatted_patch = join_patch(patch)
       if formatted_patch != existing_patch:
         bad_patches.append(filename)
-    if len(bad_patches) > 0:
+    if bad_patches:
       sys.stderr.write(
         "Patches in {} not up to date: {} patches need update\n-- {}\n".format(
           out_dir, len(bad_patches), "\n-- ".join(bad_patches)

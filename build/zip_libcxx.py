@@ -7,8 +7,7 @@ import zipfile
 
 def execute(argv):
   try:
-    output = subprocess.check_output(argv, stderr=subprocess.STDOUT)
-    return output
+    return subprocess.check_output(argv, stderr=subprocess.STDOUT)
   except subprocess.CalledProcessError as e:
     print(e.output)
     raise e

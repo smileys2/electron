@@ -51,7 +51,10 @@ const volatile char kFuseWire[] = { /* sentinel */ {sentinel}, /* fuse_version *
 """
 
 with open(os.path.join(dir_path, "fuses.json5"), 'r') as f:
-  fuse_defaults = json.loads(''.join(line for line in f.readlines() if not line.strip()[0] == "/"), object_pairs_hook=OrderedDict)
+  fuse_defaults = json.loads(
+      ''.join(line for line in f.readlines() if line.strip()[0] != "/"),
+      object_pairs_hook=OrderedDict,
+  )
 
 fuse_version = fuse_defaults['_version']
 del fuse_defaults['_version']
@@ -83,9 +86,7 @@ def c_hex(n):
   return "0x" + s.rjust(2, '0')
 
 def hex_arr(s):
-  arr = []
-  for char in s:
-    arr.append(c_hex(ord(char)))
+  arr = [c_hex(ord(char)) for char in s]
   return ",".join(arr)
 
 header = TEMPLATE_H.replace("{getters}", getters_h.strip())

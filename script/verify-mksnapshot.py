@@ -94,11 +94,8 @@ def create_app_copy(initial_app_path):
   return app_path
 
 def get_binary_path(binary_name, root_path):
-  if sys.platform == 'win32':
-    binary_path = os.path.join(root_path, '{0}.exe'.format(binary_name))
-  else:
-    binary_path = os.path.join(root_path, binary_name)
-  return binary_path
+  return (os.path.join(root_path, '{0}.exe'.format(binary_name))
+          if sys.platform == 'win32' else os.path.join(root_path, binary_name))
 
 def parse_args():
   parser = argparse.ArgumentParser(description='Test mksnapshot')
